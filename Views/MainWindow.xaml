@@ -1,0 +1,432 @@
+﻿<base:BaseWindow x:Class="WordNotes.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:base="clr-namespace:WordNotes.Views.Base"
+        mc:Ignorable="d"
+        Title="WordNotes" 
+        Height="100" Width="200"
+        WindowStyle="None" 
+        AllowsTransparency="True" Background="Transparent"
+        Topmost="True" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <!-- 上圆角矩形 -->
+            <RowDefinition Height="*" />
+            <!-- 下圆角矩形 -->
+            <RowDefinition Height="3.5*" />
+        </Grid.RowDefinitions>
+
+        <!--按钮-->
+        <!-- 拖动窗口 -->
+        <Border Grid.Row="0"
+                Background="#f2cc8f"
+                CornerRadius="8,8,0,0"
+                x:Name="Draggable"
+                PreviewMouseLeftButtonDown="BaseWindow_PreviewMouseLeftButtonDown"
+                PreviewMouseMove="BaseWindow_PreviewMouseMove"
+                PreviewMouseLeftButtonUp="BaseWindow_PreviewMouseLeftButtonUp">
+            <Grid Margin="10,0,10,0">
+                <!--均分4份-->
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!-- 圆形放大镜按钮 -->
+                <Button x:Name="SearchButton"
+                        Width="16" Height="14" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Click="SearchButton_Click"
+                        Cursor="Hand"
+                        Margin="0,2,0,0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid >
+                                <Rectangle Fill="Transparent" Margin="-5"/>
+                                <!-- 放大镜图标 -->
+                                <Path Data="M15.5,14h-0.79l-0.28,-0.27C15.41,12.59 16,11.11 16,9.5 16,5.91 13.09,3 9.5,3S3,5.91 3,9.5 5.91,16 9.5,16c1.61,0 3.09,-0.59 4.23,-1.57l0.27,0.28v0.79l5,5 1.5,-1.5 -5,-5Zm-6,0C7.01,14 5,11.99 5,9.5S7.01,5 9.5,5 14,7.01 14,9.5 11.99,14 9.5,14Z"
+                                    Fill="#e07a5f" Stretch="Uniform" />
+
+                                <Border x:Name="ButtonRectangle" Height="2" Width="0" Background="#e07a5f" Margin="0,0,0,-3" CornerRadius="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+
+                            </Grid>
+
+                            <!-- 触发器：鼠标经过时触发动画 -->
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <!-- 鼠标进入时，矩形宽度扩展 -->
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonRectangle"
+                                                         Storyboard.TargetProperty="Width"
+                                                         From="0" To="15" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <!-- 鼠标离开时，矩形宽度收缩 -->
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonRectangle"
+                                                         Storyboard.TargetProperty="Width"
+                                                         From="15" To="0" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- 收藏按钮 -->
+                <ToggleButton  x:Name="StarButton" 
+                        Grid.Column="1"
+                        Width="16" Height="16" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center" Click="StarButton_Click"
+                        Cursor="Hand">
+                    <ToggleButton.Template>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Grid>
+                                <Rectangle Fill="Transparent" Margin="-5"/>
+                                <!-- 空心五角星图标 -->
+                                <Path Name="StarPath" 
+                                    Data="M12,15.39L8.24,17.66L9.23,13.38L5.91,10.5L10.29,10.13L12,6.09L13.71,10.13L18.09,10.5L14.77,13.38L15.76,17.66L12,15.39M22,9.24L14.81,8.63L12,2L9.19,8.63L2,9.24L7.45,13.97L5.82,21L12,17.27L18.18,21L16.54,13.97L22,9.24Z"
+                                    Fill="#e07a5f" Stretch="Uniform"  />
+                                <Border x:Name="ButtonRectangle" Height="2" Width="0" Background="#e07a5f" Margin="0,0,0,-3" CornerRadius="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <!-- 点击后切换为实心五角星 -->
+                                <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                    <Setter TargetName="StarPath" Property="Data"
+                                    Value="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
+                                </Trigger>
+
+                                <!-- 经过变换 -->
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <!-- 鼠标进入时，矩形宽度扩展 -->
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonRectangle"
+                                                Storyboard.TargetProperty="Width"
+                                                From="0" To="15" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <!-- 鼠标离开时，矩形宽度收缩 -->
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonRectangle"
+                                                Storyboard.TargetProperty="Width"
+                                                From="15" To="0" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </ToggleButton.Template>
+                </ToggleButton>
+
+                <!-- 下一个单词按钮 -->
+                <Button x:Name="NextWordButton" 
+                            Grid.Column="2"
+                        Width="15" Height="15" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Click="NextWordButton_Click"
+                        Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Rectangle Fill="Transparent" Margin="-5"/>
+                                <!-- 图标 -->
+                                <Path Data="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"
+                                     Fill="#e07a5f" Stretch="Uniform" />
+
+                                <Border x:Name="ButtonRectangle" Height="2" Width="0" Background="#e07a5f" Margin="0,0,0,-3" CornerRadius="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+
+                            </Grid>
+
+                            <!-- 触发器：鼠标经过时触发动画 -->
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <!-- 鼠标进入时，矩形宽度扩展 -->
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonRectangle"
+                                                Storyboard.TargetProperty="Width"
+                                                From="0" To="15" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <!-- 鼠标离开时，矩形宽度收缩 -->
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonRectangle"
+                                                Storyboard.TargetProperty="Width"
+                                                From="15" To="0" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- 菜单 -->
+                <Button x:Name="MenuButton" 
+                            Grid.Column="3"
+                        Width="15" Height="15" 
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Click="MenuButton_Click"
+                        Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Rectangle Fill="Transparent" Margin="-5"/>
+                                <!-- 三条横线图标 -->
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <Rectangle Width="14" Height="2" Fill="#e07a5f" Margin="0,1" />
+                                    <Rectangle Width="14" Height="2" Fill="#e07a5f" Margin="0,2" />
+                                    <Rectangle Width="14" Height="2" Fill="#e07a5f" Margin="0,1" />
+                                </StackPanel>
+                                <Border x:Name="ButtonRectangle" Height="2" Width="0" Background="#e07a5f" Margin="0,0,0,-3" CornerRadius="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+
+                            </Grid>
+                            <!-- 触发器：鼠标经过时触发动画 -->
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <!-- 鼠标进入时，矩形宽度扩展 -->
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonRectangle"
+                                                Storyboard.TargetProperty="Width"
+                                                From="0" To="15" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <!-- 鼠标离开时，矩形宽度收缩 -->
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonRectangle"
+                                                Storyboard.TargetProperty="Width"
+                                                From="15" To="0" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+
+                <!-- 关闭按钮 -->
+                <Button x:Name="CloseButton" 
+                Grid.Column="4"
+                Width="15" Height="15" 
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Click="CloseButton_Click"
+                Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Rectangle Fill="Transparent" Margin="-5"/>
+                                <!-- 叉图标 -->
+                                <Path Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+                                Fill="#e07a5f" Stretch="Uniform" Margin="1" >
+                                    <!-- 旋转 -->
+                                    <Path.RenderTransform>
+                                        <RotateTransform x:Name="IconRotateTransform" Angle="0" />
+                                    </Path.RenderTransform>
+                                </Path>
+                                <Border x:Name="ButtonRectangle" Height="2" Width="0" Background="#e07a5f" Margin="0,0,0,-3" CornerRadius="1" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+
+                            </Grid>
+                            <!-- 触发器：鼠标经过时触发动画 -->
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Trigger.EnterActions>
+                                        <!-- 鼠标进入时，矩形宽度扩展 -->
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonRectangle"
+                                                Storyboard.TargetProperty="Width"
+                                                From="0" To="15" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <!-- 鼠标离开时，矩形宽度收缩 -->
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonRectangle"
+                                                Storyboard.TargetProperty="Width"
+                                                From="15" To="0" Duration="0:0:0.2" />
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
+        
+        <Grid Grid.Row="1">
+            <Border Background="#f4f1de"
+                    CornerRadius="0,0,8,8">
+                <!-- 上下分栏布局 -->
+                <Grid x:Name="MainGrid" Grid.Row="1">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition x:Name="EnglishRow" Height="*" />
+                        <!-- 上边：英语单词 -->
+                        <RowDefinition Height="1.5*" />
+                        <!-- 下边：中文解释 -->
+                    </Grid.RowDefinitions>
+
+                    <!-- 英语单词 -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="59*"/>
+                            <ColumnDefinition Width="8*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock 
+                           x:Name="EnglishWordTextBlock"
+                           Text="Helloooo0000"
+                           FontSize="22"
+                           Foreground="#3d405b"
+                           FontWeight="Bold" 
+                           MinWidth="100" 
+                           Margin="15,0,0,0" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+                        <Rectangle Width="200" Height="1" Fill="#FFB3B2B0"  VerticalAlignment="Bottom" Grid.ColumnSpan="2" />
+                    </Grid>
+
+
+                    <!-- 中文解释 -->
+                    <Grid Grid.Row="1">
+                        <ScrollViewer 
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled" Margin="15,1,10,7">
+                            <TextBlock x:Name="ExplanationTextBlock"
+                               Text="vt.你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好"
+                               Foreground="#3d405b"
+                               TextWrapping="Wrap"  
+                               FontSize="15" VerticalAlignment="Top" />
+                        </ScrollViewer>
+                        <Rectangle Width="200" Height="1" Fill="#FFB3B2B0"  VerticalAlignment="Bottom" Margin="0,0,0,26"/>
+                        <Rectangle Width="185" Height="1" Fill="#FFB3B2B0"  VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="0,0,0,7"/>
+                    </Grid>
+
+                </Grid>
+
+            </Border>
+
+            <!-- 折角 -->
+            <Button Width="18" Height="18" 
+                    VerticalAlignment="Bottom" 
+                    HorizontalAlignment="Right" 
+                    Click="NoteButton_Click"
+                    Padding="-2"
+                    Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Ellipse Fill="Transparent"/>
+                            <Path Fill="#e07a5f" Stretch="None"
+                              HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                              Margin="0">
+                                <Path.Data>
+                                    <PathGeometry>
+                                        <PathFigure StartPoint="0,0">
+                                            <LineSegment Point="-3,0" />
+                                            <ArcSegment Point="0,-3" Size="3,3" SweepDirection="Counterclockwise" />
+                                            <LineSegment Point="0,-10" />
+                                            <ArcSegment Point="8,-18" Size="8,8" SweepDirection="Clockwise" />
+                                            <LineSegment Point="15,-18" />
+                                            <ArcSegment Point="18,-20" Size="3,3" SweepDirection="Counterclockwise" />
+                                            <LineSegment Point="18,-18" />
+                                        </PathFigure>
+                                    </PathGeometry>
+                                </Path.Data>
+                                <Path.Effect>
+                                    <DropShadowEffect Color="#3d405b" 
+                                    Direction="-45" 
+                                    ShadowDepth="1" 
+                                    BlurRadius="5" 
+                                    Opacity="0.6" />
+                                </Path.Effect>
+                                <!-- 设置变换 -->
+                                <Path.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform x:Name="IconScaleTransform" ScaleX="1" ScaleY="1" />
+                                        <TranslateTransform x:Name="IconTranslateTransform" X="0" Y="0" />
+                                    </TransformGroup>
+                                </Path.RenderTransform>
+
+                            </Path>
+                        </Grid>
+
+                        <!-- 触发器：鼠标经过时触发动画 -->
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <!-- 鼠标进入时，放大并向左上角移动 -->
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <!-- 放大动画 -->
+                                            <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
+                                                         Storyboard.TargetProperty="ScaleX"
+                                                         From="1" To="1.1" Duration="0:0:0.2" />
+                                            <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
+                                                         Storyboard.TargetProperty="ScaleY"
+                                                         From="1" To="1.1" Duration="0:0:0.2" />
+                                            <!-- 移动动画 -->
+                                            <DoubleAnimation Storyboard.TargetName="IconTranslateTransform"
+                                                         Storyboard.TargetProperty="X"
+                                                         From="0" To="-2" Duration="0:0:0.2" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <!-- 鼠标离开时，恢复初始状态 -->
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <!-- 缩小动画 -->
+                                            <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
+                                                         Storyboard.TargetProperty="ScaleX"
+                                                         From="1.1" To="1" Duration="0:0:0.2" />
+                                            <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
+                                                         Storyboard.TargetProperty="ScaleY"
+                                                         From="1.1" To="1" Duration="0:0:0.2" />
+                                            <!-- 移动动画 -->
+                                            <DoubleAnimation Storyboard.TargetName="IconTranslateTransform"
+                                                         Storyboard.TargetProperty="X"
+                                                         From="-2" To="0" Duration="0:0:0.2" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+        </Grid>
+
+    </Grid>
+</base:BaseWindow>
