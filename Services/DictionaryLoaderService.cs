@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace WordNotes.Services
 {
-    public class WordLoaderService : IWordLoaderService
+    public class DictionaryLoaderService : IDictinoaryLoaderService
     {
         private AppSettings _appSettings;
         private string filePath;

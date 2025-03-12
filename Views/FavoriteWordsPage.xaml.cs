@@ -38,7 +38,7 @@ namespace WordNotes.Views
         private void LoadFavoriteWords()
         {
             // 根据索引获取已显示单词
-            var favoriteWords = _mainWindow.favoriteQueue
+            var favoriteWords = _mainWindow.wordQueueService.favoriteQueue
                 .Select(index => _mainWindow.words[index])
                 .ToList();
 

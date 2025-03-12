@@ -22,9 +22,12 @@
     <None Update="Dictionary\words.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	  <None Update="Config\settings.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <Folder Include="Config\" />
   </ItemGroup>
 
 

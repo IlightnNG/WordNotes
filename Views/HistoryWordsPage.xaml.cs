@@ -29,15 +29,26 @@ namespace WordNotes.Views
         {
             InitializeComponent();
             _mainWindow = mainWindow;
-
+            // 加载设置
+            LoadWordsNum();
             // 加载已显示单词列表
             LoadHistoryWords();
+            DataContext = _mainWindow.appSettings;
+        }
+
+        private void LoadWordsNum()
+        {
+            NowNewWordsNum.Text = _mainWindow.wordQueueService.newWordsNum.ToString();
+            NewWordsNum.Text = _mainWindow.appSettings.NewWordsNum.ToString();
+            NowReviewWordsNum.Text = _mainWindow.wordQueueService.reviewWordsNum.ToString();
+            ReviewWordsNum.Text = _mainWindow.appSettings.ReviewWordsNum.ToString();
+
         }
 
         private void LoadHistoryWords()
         {
             // 根据索引获取已显示单词
-            var historyWords = _mainWindow.historyQueue
+            var historyWords = _mainWindow.wordQueueService.historyQueue
                 .Select(index => _mainWindow.words[index])
                 .ToList();
 

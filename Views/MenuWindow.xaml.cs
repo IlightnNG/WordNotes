@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WordNotes.Models;
 using WordNotes.Services;
 using WordNotes.Views.Base;
 
@@ -100,7 +101,8 @@ namespace WordNotes.Views
         {
             _mainWindow.appSettings.MenuWindowLeft = this.Left;
             _mainWindow.appSettings.MenuWindowTop = this.Top;
-            _mainWindow.settingsService.SaveSettings(_mainWindow.appSettings);
+            _mainWindow.settingsService.UpdateSetting("MenuWindowLeft", _mainWindow.appSettings.MenuWindowLeft);
+            _mainWindow.settingsService.UpdateSetting("MenuWindowTop", _mainWindow.appSettings.MenuWindowTop);
 
         }
 

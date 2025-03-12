@@ -89,7 +89,8 @@
                         Grid.Column="1"
                         Width="16" Height="16" 
                         HorizontalAlignment="Center" VerticalAlignment="Center" Click="StarButton_Click"
-                        Cursor="Hand">
+                        Cursor="Hand"
+                        IsChecked="{Binding IsFavorite}">
                     <ToggleButton.Template>
                         <ControlTemplate TargetType="ToggleButton">
                             <Grid>
@@ -307,7 +308,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock 
                            x:Name="EnglishWordTextBlock"
-                           Text="Helloooo0000"
+                           Text="{Binding English}"
                            FontSize="22"
                            Foreground="#3d405b"
                            FontWeight="Bold" 
@@ -323,7 +324,7 @@
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled" Margin="15,1,10,7">
                             <TextBlock x:Name="ExplanationTextBlock"
-                               Text="vt.你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好你好"
+                               Text="{Binding Chiese}"
                                Foreground="#3d405b"
                                TextWrapping="Wrap"  
                                FontSize="15" VerticalAlignment="Top" />

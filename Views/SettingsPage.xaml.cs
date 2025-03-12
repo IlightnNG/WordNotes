@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,31 +25,78 @@ namespace WordNotes.Views
     {
         private MainWindow _mainWindow;
         private AppSettings _appSettings;
+        private ConfigInSettingsPage configInSettingsPage;
+
 
         public SettingsPage(MainWindow mainWindow)
         {
             InitializeComponent();
             _mainWindow = mainWindow;
             _appSettings = _mainWindow.appSettings;
+            configInSettingsPage = new ConfigInSettingsPage(_appSettings);
 
             // 绑定设置数据
-            DataContext = _appSettings;
+            DataContext = configInSettingsPage;
         }
+
 
         // 增加单词切换时间
         private void IncreaseInterval_Click(object sender, RoutedEventArgs e)
         {
-            _appSettings.TimerIntervalSeconds++;
-            IntervalTextBox.Text = _appSettings.TimerIntervalSeconds.ToString();
+            configInSettingsPage.TimerIntervalSeconds++;
         }
 
         // 减少单词切换时间
         private void DecreaseInterval_Click(object sender, RoutedEventArgs e)
         {
-            if (_appSettings.TimerIntervalSeconds > 1)
+            if (configInSettingsPage.TimerIntervalSeconds > 1)
             {
-                _appSettings.TimerIntervalSeconds--;
-                IntervalTextBox.Text = _appSettings.TimerIntervalSeconds.ToString();
+                configInSettingsPage.TimerIntervalSeconds--;
+            }
+        }
+
+        // 增加单词切换时间
+        private void IncreaseFavoriteQueueProbability_Click(object sender, RoutedEventArgs e)
+        {
+            if (configInSettingsPage.FavoriteQueueProbability < 100) configInSettingsPage.FavoriteQueueProbability++;
+        }
+
+        // 减少单词切换时间
+        private void DecreaseFavoriteQueueProbability_Click(object sender, RoutedEventArgs e)
+        {
+            if (configInSettingsPage.FavoriteQueueProbability > 1)
+            {
+                configInSettingsPage.FavoriteQueueProbability--;
+            }
+        }
+
+        // 增加每日新词出现数
+        private void IncreaseNewWordsNum_Click(object sender, RoutedEventArgs e)
+        {
+            configInSettingsPage.NewWordsNum++;
+        }
+
+        // 减少每日新词出现数
+        private void DecreaseNewWordsNum_Click(object sender, RoutedEventArgs e)
+        {
+            if (configInSettingsPage.NewWordsNum > 1)
+            {
+                configInSettingsPage.NewWordsNum--;
+            }
+        }
+
+        // 增加每日新词出现数
+        private void IncreaseReviewWordsNum_Click(object sender, RoutedEventArgs e)
+        {
+            configInSettingsPage.ReviewWordsNum++;
+        }
+
+        // 减少每日新词出现数
+        private void DecreaseReviewWordsNum_Click(object sender, RoutedEventArgs e)
+        {
+            if (configInSettingsPage.ReviewWordsNum > 1)
+            {
+                configInSettingsPage.ReviewWordsNum--;
             }
         }
 
@@ -63,14 +111,18 @@ namespace WordNotes.Views
 
             if (openFileDialog.ShowDialog() == true)
             {
-                _appSettings.DictionaryPath = openFileDialog.FileName;
-                DictionaryPathTextBox.Text = openFileDialog.FileName;
+                configInSettingsPage.DictionaryPath = openFileDialog.FileName;
             }
         }
 
         // 保存设置
         private void Restore_Click(object sender, RoutedEventArgs e)
         {
+            _appSettings.TimerIntervalSeconds = configInSettingsPage.TimerIntervalSeconds;
+            _appSettings.NewWordsNum = configInSettingsPage.NewWordsNum;
+            _appSettings.ReviewWordsNum = configInSettingsPage.ReviewWordsNum;
+            _appSettings.DictionaryPath = configInSettingsPage.DictionaryPath;
+            _appSettings.FavoriteQueueProbability = configInSettingsPage.FavoriteQueueProbability;
             _mainWindow.settingsService.SaveSettings(_appSettings);
             _mainWindow.InitSettings();
         }
