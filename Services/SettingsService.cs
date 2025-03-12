@@ -33,8 +33,8 @@ namespace WordNotes.Services
                 //var appDirectory = Path.Combine(appDataPath, appName);
 
                 var appDirectory = GetApplicationRootDirectory();
-
-                Directory.CreateDirectory(appDirectory);
+                var configDirectory = Path.Combine(appDirectory, "Config");
+                Directory.CreateDirectory(configDirectory);
                 _filePath = Path.Combine(appDirectory, filePath);
             }
             EnsureFileExists();
