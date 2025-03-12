@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+
 
 namespace WordNotes.Models
 {
     public class ConfigInSettingsPage : INotifyPropertyChanged
     {
         public int _timerIntervalSeconds = 1;
+        public bool _isDailyWordsMode = false;
         public int _newWordsNum = 0;
         public int _reviewWordsNum = 0;
         public string _dictionaryPath = "";
@@ -75,11 +72,24 @@ namespace WordNotes.Models
                 }
             }
         }
+        public bool IsDailyWordsMode
+        {
+            get => _isDailyWordsMode;
+            set
+            {
+                if (_isDailyWordsMode != value)
+                {
+                    _isDailyWordsMode = value;
+                    OnPropertyChanged(nameof(IsDailyWordsMode)); // 触发属性更改通知
+                }
+            }
+        }
 
 
         public ConfigInSettingsPage(AppSettings appSettings)
         {
             TimerIntervalSeconds = appSettings.TimerIntervalSeconds;
+            IsDailyWordsMode = appSettings.IsDailyWordsMode;
             NewWordsNum = appSettings.NewWordsNum;
             ReviewWordsNum = appSettings.ReviewWordsNum;
             DictionaryPath = appSettings.DictionaryPath;

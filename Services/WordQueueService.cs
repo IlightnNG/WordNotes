@@ -48,7 +48,6 @@ namespace WordNotes.Services
                 settingsService.SaveSettings(appSettings);
             }
 
-
             lastNewWordsQueue = _appSettings.LastNewWordsIndices;
             newWordsQueue = _appSettings.NewWordsIndices;
             lastReviewWordsQueue = _appSettings.LastReviewWordsIndices;
@@ -58,7 +57,6 @@ namespace WordNotes.Services
             reviewWordsNum = _appSettings.ReviewWordsIndices.Count;
             historyQueue = new List<int>(_appSettings.NewWordsIndices);
             historyQueue.AddRange(_appSettings.ReviewWordsIndices);
-
         }
 
         public Word NextWord()
@@ -68,6 +66,11 @@ namespace WordNotes.Services
             {
                 // 从队列中随机获取一个单词
                 index = favoriteQueue[random.Next(favoriteQueue.Count)];
+            }
+            // 每日单词模式未开启，随机出现单词
+            else if (!_appSettings.IsDailyWordsMode)
+            {
+                index = random.Next(allWords.Count);
             }
             // 概率进入复习
             else if ( random.Next(_appSettings.ReviewWordsNum/_appSettings.NewWordsNum +1) != 0 && lastNewWordsQueue != null && lastReviewWordsQueue != null && reviewWordsNum < _appSettings.ReviewWordsNum && (lastNewWordsQueue.Count != 0 || lastReviewWordsQueue.Count != 0))
@@ -97,14 +100,12 @@ namespace WordNotes.Services
             else if (newWordsNum < _appSettings.NewWordsNum ) 
             {
                 // 生成新词，保证不在上一次的新词和复习单词中
-                
                 index = random.Next(allWords.Count);
                 if (!historyQueue.Contains(index))
                 {
                     newWordsNum++;
                     newWordsQueue.Add(index);
                 }
-                
             }
             else
             {

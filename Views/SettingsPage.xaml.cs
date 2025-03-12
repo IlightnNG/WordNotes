@@ -70,6 +70,20 @@ namespace WordNotes.Views
             }
         }
 
+
+        // 每日单词模式
+        // 当切换开关被选中时
+        private void DailyWordsModeToggleSwitch_Checked(object sender, RoutedEventArgs e)
+        {
+            configInSettingsPage.IsDailyWordsMode = true;
+        }
+
+        // 当切换开关取消选中时
+        private void DailyWordsModeToggleSwitch_Unchecked(object sender, RoutedEventArgs e)
+        {
+            configInSettingsPage.IsDailyWordsMode = false;
+        }
+
         // 增加每日新词出现数
         private void IncreaseNewWordsNum_Click(object sender, RoutedEventArgs e)
         {
@@ -119,6 +133,7 @@ namespace WordNotes.Views
         private void Restore_Click(object sender, RoutedEventArgs e)
         {
             _appSettings.TimerIntervalSeconds = configInSettingsPage.TimerIntervalSeconds;
+            _appSettings.IsDailyWordsMode = configInSettingsPage.IsDailyWordsMode;
             _appSettings.NewWordsNum = configInSettingsPage.NewWordsNum;
             _appSettings.ReviewWordsNum = configInSettingsPage.ReviewWordsNum;
             _appSettings.DictionaryPath = configInSettingsPage.DictionaryPath;
@@ -147,15 +162,6 @@ namespace WordNotes.Views
                 _mainWindow.InitSettings();
             }
             
-        }
-
-        // 页面离开时保存设置
-        private void ContentFrame_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
-        {
-            if (e.Content != this) // 确保只在离开页面时保存
-            {
-                _mainWindow.settingsService.SaveSettings(_appSettings);
-            }
         }
     }
 }

@@ -15,6 +15,7 @@ namespace WordNotes.Models
         public int TimerIntervalSeconds { get; set; } = 5;
         public int FavoriteQueueProbability { get; set; } = 20;
         public string DictionaryPath { get; set; } = "Dictionary/words.xlsx";
+        public bool IsDailyWordsMode { get; set; } = false;
         public int NewWordsNum { get; set; } = 25;
         public int ReviewWordsNum { get; set; } = 75;
         public List<int> FavoriteIndices { get; set; } = new();
