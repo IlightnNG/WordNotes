@@ -49,7 +49,10 @@ namespace WordNotes.Views
                 NowNewWordsNum.Text = _mainWindow.wordQueueService.newWordsNum.ToString();
                 NewWordsNum.Text = _mainWindow.appSettings.NewWordsNum.ToString();
                 NowReviewWordsNum.Text = _mainWindow.wordQueueService.reviewWordsNum.ToString();
-                ReviewWordsNum.Text = _mainWindow.appSettings.ReviewWordsNum.ToString();
+                int lastWordsQueueNum = _mainWindow.wordQueueService.lastNewWordsQueue.Count + _mainWindow.wordQueueService.lastReviewWordsQueue.Count + _mainWindow.wordQueueService.reviewWordsNum;
+                if (_mainWindow.appSettings.ReviewWordsNum> lastWordsQueueNum)
+                ReviewWordsNum.Text = lastWordsQueueNum.ToString();
+                else ReviewWordsNum.Text = _mainWindow.appSettings.ReviewWordsNum.ToString();
             }
         }
 

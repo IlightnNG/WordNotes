@@ -41,12 +41,24 @@ namespace WordNotes.Services
             // 如果上次登录时间并非今天，将之前的当天记录作为今天的上一次记录
             if(_appSettings.LastAccessDate< DateTime.Now.Date)
             {
+                
+                _appSettings.LastReviewWordsIndices = new List<int>(_appSettings.LastReviewWordsIndices);
+                _appSettings.LastReviewWordsIndices.AddRange(_appSettings.ReviewWordsIndices);
+                _appSettings.LastReviewWordsIndices.AddRange(_appSettings.LastNewWordsIndices);
+
+                if (_appSettings.LastReviewWordsIndices.Count > 200)
+                {
+                    // 删除200之后的所有元素
+                    _appSettings.LastReviewWordsIndices.RemoveRange(200, _appSettings.LastReviewWordsIndices.Count - 200);
+                }
+
                 _appSettings.LastNewWordsIndices = new List<int>(_appSettings.NewWordsIndices);
-                _appSettings.LastReviewWordsIndices = new List<int>(_appSettings.ReviewWordsIndices);
                 _appSettings.NewWordsIndices = new List<int>();
                 _appSettings.ReviewWordsIndices = new List<int>();
                 settingsService.SaveSettings(appSettings);
             }
+
+            
 
             lastNewWordsQueue = _appSettings.LastNewWordsIndices;
             newWordsQueue = _appSettings.NewWordsIndices;
@@ -73,9 +85,11 @@ namespace WordNotes.Services
                 index = random.Next(allWords.Count);
             }
             // 概率进入复习
-            else if ( random.Next(_appSettings.ReviewWordsNum/_appSettings.NewWordsNum +1) != 0 && lastNewWordsQueue != null && lastReviewWordsQueue != null && reviewWordsNum < _appSettings.ReviewWordsNum && (lastNewWordsQueue.Count != 0 || lastReviewWordsQueue.Count != 0))
+            else if ( random.Next(_appSettings.ReviewWordsNum/_appSettings.NewWordsNum) != 0 && lastNewWordsQueue != null && lastReviewWordsQueue != null && reviewWordsNum < _appSettings.ReviewWordsNum && (lastNewWordsQueue.Count != 0 || lastReviewWordsQueue.Count != 0))
             {
                 // 复习单词从上一次的单词
+                // 记录是否有未复习单词，能否复习
+                bool ifReview = true;
                 if (lastNewWordsQueue.Count != 0 && random.Next(2) == 0)
                 {
                     do
@@ -92,10 +106,25 @@ namespace WordNotes.Services
                     } while (historyQueue.Contains(index));
                     lastReviewWordsQueue.Remove(index);
                 }
-                else index = random.Next(allWords.Count);
+                else if (lastNewWordsQueue.Count != 0)
+                {
+                    do
+                    {
+                        index = lastNewWordsQueue[random.Next(lastNewWordsQueue.Count)];
+                    } while (historyQueue.Contains(index));
+                    lastNewWordsQueue.Remove(index);
+                }
+                else ifReview = false;
+
+                if (ifReview)
+                {
+                    reviewWordsNum++;
+                    reviewWordsQueue.Add(index);
+                }else
+                {
+                    index = historyQueue[random.Next(historyQueue.Count)];
+                }
                 
-                reviewWordsNum++;
-                reviewWordsQueue.Add(index);
             }
             else if (newWordsNum < _appSettings.NewWordsNum ) 
             {

@@ -45,6 +45,11 @@ public partial class MainWindow : BaseWindow
         InitSettings();
         // 显示第一个单词
         ShowRandomWord();
+        // 初始化定时器
+        
+        timer.Tick += Timer_Tick;
+        timer.Stop();
+        timer.Start();
     }
 
     public void InitSettings()
@@ -68,11 +73,8 @@ public partial class MainWindow : BaseWindow
         interval = appSettings.TimerIntervalSeconds;
         // 单词生成器
         wordQueueService = new WordQueueService(appSettings, words, settingsService);
-        // 初始化定时器
-        timer.Interval = TimeSpan.FromSeconds(interval); // 每5秒更换一次单词
-        timer.Tick += Timer_Tick;
-        timer.Stop();
-        timer.Start();
+
+        timer.Interval = TimeSpan.FromSeconds(interval); // 每n秒更换一次单词
 
     }
 
@@ -85,7 +87,7 @@ public partial class MainWindow : BaseWindow
     private void ShowRandomWord()
     {
         // 展示队列调整
-        if (wordQueueService.historyQueue.Count>appSettings.NewWordsNum+appSettings.ReviewWordsNum)
+        if (wordQueueService.historyQueue.Count > 200)
         {
             wordQueueService.historyQueue.RemoveAt(0);
         }
