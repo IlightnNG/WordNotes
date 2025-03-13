@@ -56,7 +56,7 @@
                 <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
                     <StackPanel>
                         <TextBlock Text="软件名：Word Notes" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
-                        <TextBlock Text="版本：v0.3" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
+                        <TextBlock Text="版本：v0.3.1" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
                         <TextBlock Text="作者：IlightnNG" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
