@@ -71,7 +71,7 @@ namespace WordNotes.Services
             historyQueue.AddRange(_appSettings.ReviewWordsIndices);
         }
 
-        public Word NextWord()
+        public int NextWord()
         {
             int index = 0;
             if (favoriteQueue.Count > 0 && random.Next(100) <= _appSettings.FavoriteQueueProbability) // 进入记忆队列概率
@@ -147,7 +147,7 @@ namespace WordNotes.Services
 
             _appSettings.LastAccessDate = DateTime.Now.Date;
             _settingsService.SaveSettings(_appSettings);
-            return allWords[index];
+            return index;
         }
     }
 }

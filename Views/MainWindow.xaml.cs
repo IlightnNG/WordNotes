@@ -4,6 +4,7 @@ using WordNotes.Models;
 using WordNotes.Services;
 using System.Diagnostics;
 using WordNotes.Views.Base;
+using System.Windows.Controls;
 
 namespace WordNotes.Views;
 
@@ -22,6 +23,8 @@ public partial class MainWindow : BaseWindow
 
     // 单词队列
     public WordQueueService wordQueueService;
+    private int currentWordIndex;
+    public Word currentWord;
 
     // 随机数生成器
     private Random random = new Random();
@@ -91,36 +94,53 @@ public partial class MainWindow : BaseWindow
         {
             wordQueueService.historyQueue.RemoveAt(0);
         }
-        Word nextWord = wordQueueService.NextWord();
-        EnglishWordTextBlock.Text = nextWord.English;
-        ExplanationTextBlock.Text = nextWord.Chinese;
-        StarButton.IsChecked = nextWord.IsFavorite;
+        currentWordIndex = wordQueueService.NextWord();
+        currentWord = words[currentWordIndex];
+
+        DataContext = currentWord;
+        //EnglishWordTextBlock.Text = nextWord.English;
+        //ExplanationTextBlock.Text = nextWord.Chinese;
+        //StarButton.IsChecked = nextWord.IsFavorite;
     }
 
 
-    // 搜索按钮
+    // 点击英语单词搜索该单词
     private void SearchButton_Click(object sender, RoutedEventArgs e)
     {
         // 获取当前显示的英文单词
-        string word = EnglishWordTextBlock.Text;
 
-        // 调用浏览器打开有道词典搜索页面
-        if (!string.IsNullOrEmpty(word))
+        if (currentWord != null)
         {
-            string url = $"https://dict.youdao.com/result?word={word}&lang=en";
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-        }
-        else
-        {
-            MessageBox.Show("当前没有显示的单词。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // 调用浏览器打开有道词典搜索页面
+            if (!string.IsNullOrEmpty(currentWord.English))
+            {
+                string url = $"https://dict.youdao.com/result?word={currentWord.English}&lang=en";
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            else
+            {
+                MessageBox.Show("当前没有显示的单词。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
+
+    private void PausePlayButton_Checked(object sender, RoutedEventArgs e)
+    {
+        timer.Stop();
+    }
+    private void PausePlayButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+        timer.Start();
+    }
+
+
 
     // 实心五角星按钮点击事件
     private void StarButton_Click(object sender, RoutedEventArgs e)
     {
         // 获取当前单词的索引
-        int currentIndex = words.FindIndex(w => w.English == EnglishWordTextBlock.Text);
+        int currentIndex = currentWordIndex;
 
         // 如果按钮被选中（实心五角星），将索引添加到记忆队列
         if (StarButton.IsChecked == true && currentIndex != -1 && !favoriteQueue.Contains(currentIndex))

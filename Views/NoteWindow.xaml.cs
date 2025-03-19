@@ -44,8 +44,8 @@ namespace WordNotes.Views
         private void LoadCurrentWords()
         {
             // 获取单词
-            EnglishNote.Text = _mainWindow.EnglishWordTextBlock.Text;
-            ChineseNote.Text = _mainWindow.ExplanationTextBlock.Text;
+            EnglishNote.Text = _mainWindow.currentWord.English;
+            ChineseNote.Text = _mainWindow.currentWord.Chinese;
             AdjustGridColumnWidth(EnglishNote.Text);
         }
 
