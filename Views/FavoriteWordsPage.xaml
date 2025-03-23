@@ -14,7 +14,7 @@
             <ItemsControl x:Name="FavoriteWordsList">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Padding="10,7,10,10" Background="#f2cc8f" CornerRadius="5" Margin="7,5,14,5">
+                        <Border Padding="10,7,10,7" Background="#f2cc8f" CornerRadius="5" Margin="7,5,14,2">
                             <StackPanel>
                                 <Grid>
 

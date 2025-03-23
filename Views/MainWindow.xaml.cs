@@ -1,23 +1,10 @@
-﻿using System.Globalization;
-using System.Reflection.Metadata;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
 using System.Windows.Threading;
-using System.IO;
 using WordNotes.Models;
 using WordNotes.Services;
 using System.Diagnostics;
 using WordNotes.Views.Base;
+using System.Windows.Controls;
 
 namespace WordNotes.Views;
 
@@ -32,7 +19,12 @@ public partial class MainWindow : BaseWindow
     public AppSettings appSettings;
     // 单词库
     public List<Word> words;
-    WordLoaderService wordLoaderService = new WordLoaderService();
+    public DictionaryLoaderService dictionaryLoaderService = new DictionaryLoaderService();
+
+    // 单词队列
+    public WordQueueService wordQueueService;
+    private int currentWordIndex;
+    public Word currentWord;
 
     // 随机数生成器
     private Random random = new Random();
@@ -41,9 +33,7 @@ public partial class MainWindow : BaseWindow
     private DispatcherTimer timer = new DispatcherTimer();
     private int interval;
 
-    // 展示队列
-    public List<int> historyQueue = new List<int>();
-    // 记忆队列
+    // 收藏队列
     public List<int> favoriteQueue = new List<int>();
 
     // 菜单窗口
@@ -54,21 +44,23 @@ public partial class MainWindow : BaseWindow
 
     public MainWindow()
     {
-
         InitializeComponent();
-
         InitSettings();
         // 显示第一个单词
         ShowRandomWord();
-
+        // 初始化定时器
         
-
+        timer.Tick += Timer_Tick;
+        timer.Stop();
+        timer.Start();
     }
 
     public void InitSettings()
     {
 
         appSettings = settingsService.LoadSettings();
+        // 从 CSV 或 Excel 文件加载单词列表
+        words = dictionaryLoaderService.LoadWords(appSettings);
 
         //// 设置窗口位置（任务栏左侧）
         this.Left = appSettings.MainWindowLeft == 0 ? 0 : appSettings.MainWindowLeft;
@@ -77,21 +69,15 @@ public partial class MainWindow : BaseWindow
         // 可拖动范围
         _dragArea = new Rect(0, 0, 200, 100);
 
-        // 从 CSV 或 Excel 文件加载单词列表
-        words = wordLoaderService.LoadWords(appSettings);
-
         // 加载收藏单词表
         favoriteQueue = appSettings.FavoriteIndices;
 
         // 时间间隔
         interval = appSettings.TimerIntervalSeconds;
+        // 单词生成器
+        wordQueueService = new WordQueueService(appSettings, words, settingsService);
 
-        // 初始化定时器
-        
-        timer.Interval = TimeSpan.FromSeconds(interval); // 每5秒更换一次单词
-        timer.Tick += Timer_Tick;
-        timer.Stop();
-        timer.Start();
+        timer.Interval = TimeSpan.FromSeconds(interval); // 每n秒更换一次单词
 
     }
 
@@ -103,62 +89,58 @@ public partial class MainWindow : BaseWindow
 
     private void ShowRandomWord()
     {
-        int index = 0;
-        if (favoriteQueue.Count > 0 && random.Next(4) == 0) // 进入记忆队列概率
-        {
-            // 从队列中随机获取一个单词
-            index = favoriteQueue[random.Next(favoriteQueue.Count)];
-
-            // 将星确认
-            StarButton.IsChecked = true;
-        }
-        else
-        {    // 随机选择一个单词
-            index = random.Next(words.Count);
-
-            // 将星取消
-            StarButton.IsChecked = false;
-        }    
-        var CurrentWord = words[index];
-
-
-        EnglishWordTextBlock.Text = CurrentWord.English;
-        ExplanationTextBlock.Text = CurrentWord.Chinese;
-
         // 展示队列调整
-        historyQueue.Add(index);
-        if (historyQueue.Count>10)
+        if (wordQueueService.historyQueue.Count > 200)
         {
-            historyQueue.RemoveAt(0);
+            wordQueueService.historyQueue.RemoveAt(0);
         }
+        currentWordIndex = wordQueueService.NextWord();
+        currentWord = words[currentWordIndex];
 
-        
+        DataContext = currentWord;
+        //EnglishWordTextBlock.Text = nextWord.English;
+        //ExplanationTextBlock.Text = nextWord.Chinese;
+        //StarButton.IsChecked = nextWord.IsFavorite;
     }
-    
 
-    // 搜索按钮
+
+    // 点击英语单词搜索该单词
     private void SearchButton_Click(object sender, RoutedEventArgs e)
     {
         // 获取当前显示的英文单词
-        string word = EnglishWordTextBlock.Text;
 
-        // 调用浏览器打开有道词典搜索页面
-        if (!string.IsNullOrEmpty(word))
+        if (currentWord != null)
         {
-            string url = $"https://dict.youdao.com/result?word={word}&lang=en";
-            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-        }
-        else
-        {
-            MessageBox.Show("当前没有显示的单词。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            // 调用浏览器打开有道词典搜索页面
+            if (!string.IsNullOrEmpty(currentWord.English))
+            {
+                string url = $"https://dict.youdao.com/result?word={currentWord.English}&lang=en";
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            else
+            {
+                MessageBox.Show("当前没有显示的单词。", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
     }
+
+    private void PausePlayButton_Checked(object sender, RoutedEventArgs e)
+    {
+        timer.Stop();
+    }
+    private void PausePlayButton_Unchecked(object sender, RoutedEventArgs e)
+    {
+        timer.Start();
+    }
+
+
 
     // 实心五角星按钮点击事件
     private void StarButton_Click(object sender, RoutedEventArgs e)
     {
         // 获取当前单词的索引
-        int currentIndex = words.FindIndex(w => w.English == EnglishWordTextBlock.Text);
+        int currentIndex = currentWordIndex;
 
         // 如果按钮被选中（实心五角星），将索引添加到记忆队列
         if (StarButton.IsChecked == true && currentIndex != -1 && !favoriteQueue.Contains(currentIndex))
@@ -167,9 +149,7 @@ public partial class MainWindow : BaseWindow
             words[currentIndex].IsFavorite = true;
             favoriteQueue.Add(currentIndex);
             // 持久化
-            settingsService.SaveSettings(appSettings);
-
-
+            settingsService.UpdateSetting("FavoriteIndices", favoriteQueue);
         }
         // 如果按钮取消选中（空心五角星），从记忆队列中移除索引
         else if (StarButton.IsChecked == false && currentIndex != -1)
@@ -177,7 +157,7 @@ public partial class MainWindow : BaseWindow
             words[currentIndex].IsFavorite = false;
 
             favoriteQueue.Remove(currentIndex);
-            settingsService.SaveSettings(appSettings);
+            settingsService.UpdateSetting("FavoriteIndices", favoriteQueue);
         }
     }
 
@@ -224,7 +204,8 @@ public partial class MainWindow : BaseWindow
     {
         appSettings.MainWindowLeft = this.Left;
         appSettings.MainWindowTop = this.Top;
-        settingsService.SaveSettings(appSettings);
+        settingsService.UpdateSetting("MainWindowLeft", appSettings.MainWindowLeft);
+        settingsService.UpdateSetting("MainWindowTop", appSettings.MainWindowTop);
 
     }
 

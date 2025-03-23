@@ -3,103 +3,282 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:WordNotes.Views"
+      xmlns:local="clr-namespace:WordNotes.Views" 
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="180"
+      d:DesignHeight="350" d:DesignWidth="180"
       Title="SettingsPage">
+    <Page.Resources>
+        <!-- 定义切换开关的样式 -->
+        <Style x:Key="ToggleSwitchStyle" TargetType="ToggleButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="Transparent" Margin="1" Cursor="Hand">
+                            <Grid>
+                                <!-- 圆角矩形背景 -->
+                                <Border x:Name="BackgroundBorder"
+                                        Width="35" Height="20"
+                                        CornerRadius="10"
+                                        Background="DarkGray" />
+                                <!-- 圆形滑块 -->
+                                <Ellipse x:Name="Thumb"
+                                         Width="16" Height="16"
+                                         HorizontalAlignment="Left"
+                                         VerticalAlignment="Center"
+                                         Margin="2"
+                                         Fill="#f2cc8f" />
+                            </Grid>
+                        </Border>
+                        <!-- 触发器：切换状态时改变样式 -->
+                        <ControlTemplate.Triggers>
+                            <!-- 当 ToggleButton 被选中时 -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <!-- 移动圆形滑块到右侧 -->
+                                <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right" />
+                                <!-- 改变背景颜色 -->
+                                <Setter TargetName="BackgroundBorder" Property="Background" Value="#e07a5f" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+    
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Margin="5">
+                <!-- 基本信息 -->
+                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
+                    <StackPanel>
+                        <TextBlock Text="软件名：Word Notes" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
+                        <TextBlock Text="版本：v0.3.1" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
+                        <TextBlock Text="作者：IlightnNG" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+                <!-- 第一行 单词间隔 -->
+                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
+                    <Grid>
+                        <Grid>
+                            <TextBlock Text="切换时间(s)"  FontSize="14" Foreground="#3d405b" VerticalAlignment="Center"/>
+                        </Grid>
+                        <!-- 单词切换时间 -->
+                        <StackPanel  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24">
+                            <Border  Background="#e07a5f" CornerRadius="5" Margin="1">
+                                <TextBox x:Name="IntervalTextBox" Background="Transparent" BorderBrush="Transparent" Margin="4,0,0,2" Width="25" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                                        Text="{Binding TimerIntervalSeconds}" Cursor="" />
+                            </Border>
+                            <!-- 加 -->
+                            <Button  Width="20"  Click="IncreaseInterval_Click" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="#e07a5f" CornerRadius="5" Margin="1">
+                                            <TextBlock Text="+" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <!-- 减 -->
+                            <Button  Width="20"  Click="DecreaseInterval_Click" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="#e07a5f" CornerRadius="5" Margin="1">
+                                            <TextBlock Text="-" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
 
-    <StackPanel Margin="5">
-        <!-- 基本信息 -->
-        <Border Background="#f2cc8f" CornerRadius="5" Padding="10" Margin="2">
-            <StackPanel>
-                <TextBlock Text="软件名：Word Notes" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
-                <TextBlock Text="版本：v0.2" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
-                <TextBlock Text="作者：IlightnNG" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
-            </StackPanel>
-        </Border>
-        <!-- 第一行 单词间隔 -->
-        <Border Background="#f2cc8f" CornerRadius="5" Padding="10" Margin="2">
-            <Grid>
-                <Grid>
-                    <TextBlock Text="切换时间(s)"  FontSize="14" Foreground="#3d405b" VerticalAlignment="Center"/>
-                </Grid>
-                <!-- 单词切换时间 -->
-                <StackPanel  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Height="25">
-                    <Border  Background="#e07a5f" CornerRadius="5" Margin="1">
-                        <TextBox x:Name="IntervalTextBox" Background="Transparent" BorderBrush="Transparent" Margin="4,0,0,2" Width="25" VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                                Text="{Binding TimerIntervalSeconds, UpdateSourceTrigger=PropertyChanged}" />
-                    </Border>
-                    <!-- 加 -->
-                    <Button  Width="20"  Click="IncreaseInterval_Click" Cursor="Hand">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="#e07a5f" CornerRadius="5" Margin="1">
-                                    <TextBlock Text="+" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                <!-- 出现收藏单词概率 -->
+                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
+                    <Grid >
+                        <Grid>
+                            <TextBlock Text="收藏单词
+                                       出现概率(%)" Width="80"  FontSize="14" Foreground="#3d405b" VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                        </Grid>
+                        <!-- 出现收藏单词概率 -->
+                        <StackPanel  Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Height="24">
+                            <Border  Background="#e07a5f" CornerRadius="5" Margin="1">
+                                <TextBox x:Name="FavoriteQueueProbabilityTextBox" Background="Transparent" BorderBrush="Transparent" Margin="4,0,0,2" Width="25" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                        Text="{Binding FavoriteQueueProbability}"  />
+                            </Border>
+                            <!-- 加 -->
+                            <Button  Width="20"  Click="IncreaseFavoriteQueueProbability_Click" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="#e07a5f" CornerRadius="5" Margin="1">
+                                            <TextBlock Text="+" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <!-- 减 -->
+                            <Button  Width="20"  Click="DecreaseFavoriteQueueProbability_Click" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="#e07a5f" CornerRadius="5" Margin="1">
+                                            <TextBlock Text="-" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                
+                <!-- 每日新词和复习词 -->
+                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
+                    <StackPanel Orientation="Vertical">
+                        <!-- 模式开关 -->
+                        <Grid>
+                            <Grid>
+                                <TextBlock Text="每日单词模式"  FontSize="14" Foreground="#3d405b" VerticalAlignment="Center"/>
+                            </Grid>
+                            <!-- 每日新词 -->
+                            <ToggleButton x:Name="ToggleSwitch"
+                            Style="{StaticResource ToggleSwitchStyle}"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            IsChecked="{Binding IsDailyWordsMode}"
+                            Checked="DailyWordsModeToggleSwitch_Checked"
+                            Unchecked="DailyWordsModeToggleSwitch_Unchecked" />
+                        </Grid>
+
+                        <Grid Margin="0,3,0,0">
+                            <Grid>
+                                <TextBlock Text="每日新词数"  FontSize="14" Foreground="#3d405b" VerticalAlignment="Center"/>
+                            </Grid>
+                            <!-- 每日新词 -->
+                            <StackPanel  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24">
+                                <Border  Background="#e07a5f" CornerRadius="5" Margin="1">
+                                    <TextBox x:Name="NewWordsNumTextBox" Background="Transparent" BorderBrush="Transparent" Margin="4,0,0,2" Width="25" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                                    Text="{Binding NewWordsNum}" />
                                 </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                    <!-- 减 -->
-                    <Button  Width="20"  Click="DecreaseInterval_Click" Cursor="Hand">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="#e07a5f" CornerRadius="5" Margin="1">
-                                    <TextBlock Text="-" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                <!-- 加 -->
+                                <Button  Width="20"  Click="IncreaseNewWordsNum_Click" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="#e07a5f" CornerRadius="5" Margin="1">
+                                                <TextBlock Text="+" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                                <!-- 减 -->
+                                <Button  Width="20"  Click="DecreaseNewWordsNum_Click" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="#e07a5f" CornerRadius="5" Margin="1">
+                                                <TextBlock Text="-" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,3,0,0">
+                            <Grid>
+                                <TextBlock Text="每日复习数"  FontSize="14" Foreground="#3d405b" VerticalAlignment="Center"/>
+                            </Grid>
+                            <!-- 每日复习词 -->
+                            <StackPanel  Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Height="24">
+                                <Border  Background="#e07a5f" CornerRadius="5" Margin="1">
+                                    <TextBox x:Name="ReviewWordsNumTextBox" Background="Transparent" BorderBrush="Transparent" Margin="4,0,0,2" Width="25" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                                    Text="{Binding ReviewWordsNum}" />
                                 </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                </StackPanel>
-            </Grid>
-        </Border>
+                                <!-- 加 -->
+                                <Button  Width="20"  Click="IncreaseReviewWordsNum_Click" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="#e07a5f" CornerRadius="5" Margin="1">
+                                                <TextBlock Text="+" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                                <!-- 减 -->
+                                <Button  Width="20"  Click="DecreaseReviewWordsNum_Click" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="#e07a5f" CornerRadius="5" Margin="1">
+                                                <TextBlock Text="-" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Bold"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
 
-        <!-- 第二行 词库路径 -->
-        <Border Background="#f2cc8f" CornerRadius="5" Padding="10" Margin="2">
-            <StackPanel Orientation="Vertical">
-                <Grid>
-                    <TextBlock Text="词库路径" FontSize="14" Foreground="#3d405b" VerticalAlignment="Center"/>
-                    <Button  Width="60" Height="25" Click="SelectDictionaryFile_Click" Cursor="Hand" HorizontalAlignment="Right">
-                        <Button.Template>
-                            <ControlTemplate TargetType="Button">
-                                <Border Background="#e07a5f" CornerRadius="5">
-                                    <TextBlock Text="选择文件" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                </Border>
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                </Grid>
-                <Grid>
-                    <Border Grid.Column="0" Background="#e07a5f" CornerRadius="5" Height="25" Margin="0,5,0,0" HorizontalAlignment="Center">
-                        <TextBox x:Name="DictionaryPathTextBox" Background="Transparent" BorderBrush="Transparent" Height="20" Width="146" VerticalAlignment="Bottom" HorizontalAlignment="Center"
-                        Text="{Binding DictionaryPath, UpdateSourceTrigger=PropertyChanged}" />
+                <!-- 词库路径 -->
+                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <TextBlock Text="词库路径" FontSize="14" Foreground="#3d405b" VerticalAlignment="Center"/>
+                            <Button  Width="60" Height="24" Click="SelectDictionaryFile_Click" Cursor="Hand" HorizontalAlignment="Right">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="#e07a5f" CornerRadius="5" Margin="1">
+                                            <TextBlock Text="选择文件" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                        <Grid  Margin="0,3,0,0">
+                            <Border Grid.Column="0" Background="#e07a5f" CornerRadius="5" Height="24" HorizontalAlignment="Center" Margin="1">
+                                <TextBox x:Name="DictionaryPathTextBox" Background="Transparent" BorderBrush="Transparent" Margin="5,0,0,0" Height="20" Width="146" VerticalAlignment="Bottom" HorizontalAlignment="Center"
+                                Text="{Binding DictionaryPath}" FontSize="12" />
 
-                    </Border>
-                </Grid>
-            </StackPanel>
-        </Border>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </Border>
 
-        <!-- 保存设置按钮 -->
-        <Button  Width="60" Height="25" Click="Restore_Click" Cursor="Hand" HorizontalAlignment="Center" Margin="5">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border Background="#e07a5f" CornerRadius="5" >
-                        <TextBlock Text="保存" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-
-        <!-- 恢复默认设置按钮 -->
-        <Button  Width="60" Height="25" Click="RestoreDefaults_Click" Cursor="Hand" HorizontalAlignment="Center"  Margin="5">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border Background="#e07a5f" CornerRadius="5">
-                        <TextBlock Text="恢复默认" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
+            
         
         
-    </StackPanel>
+            </StackPanel>
+        
+        </ScrollViewer>
+
+        <Grid Grid.Row="1" Margin="5,0,5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="1.7*"/>
+            </Grid.ColumnDefinitions>
+           
+            <!-- 恢复默认设置按钮 -->
+            <Button Grid.Column="0"  Width="60" Height="25" Click="RestoreDefaults_Click" Cursor="Hand" HorizontalAlignment="Center"  Margin="0">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="#e07a5f" CornerRadius="5" >
+                            <TextBlock Text="恢复默认" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <!-- 保存设置按钮 -->
+            <Button Grid.Column="1"  Width="100" Height="25" Click="Restore_Click" Cursor="Hand" HorizontalAlignment="Center" Margin="0">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="#e07a5f" CornerRadius="5" >
+                            <TextBlock Text="保存" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+    
+    </Grid>
 </Page>

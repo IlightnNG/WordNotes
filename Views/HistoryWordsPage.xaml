@@ -3,17 +3,32 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:WordNotes.Views"
+      xmlns:local="clr-namespace:WordNotes.Views" xmlns:models="clr-namespace:WordNotes.Models"
       mc:Ignorable="d" 
       Title="HistoryWordsPage">
-
+    <Page.DataContext>
+        <models:Word />
+    </Page.DataContext>
     <ScrollViewer>
         <StackPanel>
+            <Border x:Name="DailyWordsBorder" Padding="7" Background="#f2cc8f" CornerRadius="5" Margin="7,5,14,2">
+                <TextBlock FontSize="12" Foreground="#3d405b" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Run Text="新词" FontWeight="Bold"/>
+                        <Run x:Name="NowNewWordsNum"/>
+                        <Run Text="/"/>
+                        <Run x:Name="NewWordsNum"/>
+
+                        <Run Text=" 复习" FontWeight="Bold"/>
+                        <Run x:Name="NowReviewWordsNum"/>
+                        <Run Text="/"/>
+                        <Run x:Name="ReviewWordsNum"/>
+                </TextBlock>
+            </Border>
             <!-- 动态生成已显示单词列表 -->
             <ItemsControl x:Name="HistoryWordsList">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Padding="10,7,10,10" Background="#f2cc8f" CornerRadius="5" Margin="7,5,14,5">
+                        <Border Padding="10,7,10,7" Background="#f2cc8f" CornerRadius="5" Margin="7,5,14,2">
                             <StackPanel>
                                 <Grid>
                                     <!-- 收藏按钮 -->
@@ -52,7 +67,7 @@
                                     HorizontalAlignment="Left">
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
-                                                <TextBlock Text="{Binding English}" FontSize="18" Foreground="#3d405b" FontWeight="Bold"  Margin="0,0,0,0"/>
+                                                <TextBlock Text="{Binding English}" FontSize="18" Foreground="#3d405b" FontWeight="Bold" />
                                             </ControlTemplate> 
                                         </Button.Template>
                                     </Button>

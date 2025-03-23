@@ -11,6 +11,8 @@ using System.Xml;
 using WordNotes.Models;
 namespace WordNotes.Services
 {
+    // 其实可以使用vs自带的 Properties.Settings.Default.
+    // 自己创建json文件储存是多此一举
     public class SettingsService
     {
         private readonly string _filePath;
@@ -31,8 +33,8 @@ namespace WordNotes.Services
                 //var appDirectory = Path.Combine(appDataPath, appName);
 
                 var appDirectory = GetApplicationRootDirectory();
-
-                Directory.CreateDirectory(appDirectory);
+                var configDirectory = Path.Combine(appDirectory, "Config");
+                Directory.CreateDirectory(configDirectory);
                 _filePath = Path.Combine(appDirectory, filePath);
             }
             EnsureFileExists();

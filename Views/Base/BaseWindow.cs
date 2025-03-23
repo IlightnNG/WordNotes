@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows;
 using WordNotes.Models;
 using WordNotes.Services;
+using System.Windows.Controls.Primitives;
 
 namespace WordNotes.Views.Base
 {
@@ -64,5 +65,7 @@ namespace WordNotes.Views.Base
 
         // 存储窗口信息
         public abstract void SaveWindowPosition();
+
+
     }
 }

@@ -7,7 +7,7 @@ using WordNotes.Models;
 
 namespace WordNotes.Services
 {
-    public interface IWordLoaderService
+    public interface IDictinoaryLoaderService
     {
         List<Word> LoadWords(AppSettings appSettings);
     }
