@@ -89,11 +89,7 @@ public partial class MainWindow : BaseWindow
 
     private void ShowRandomWord()
     {
-        // 展示队列调整
-        if (wordQueueService.historyQueue.Count > 200)
-        {
-            wordQueueService.historyQueue.RemoveAt(0);
-        }
+        
         currentWordIndex = wordQueueService.NextWord();
         currentWord = words[currentWordIndex];
 
