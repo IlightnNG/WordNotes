@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WordNotes.Models;
 using WordNotes.Views.Base;
 
 namespace WordNotes.Views
@@ -21,40 +22,52 @@ namespace WordNotes.Views
     /// </summary>
     public partial class NoteWindow : BaseWindow
     {
-        private MainWindow _mainWindow;
+        //private MainWindow _mainWindow;
 
 
-        public NoteWindow(MainWindow mainWindow)
+        //public NoteWindow(MainWindow mainWindow)
+        //{
+        //    InitializeComponent();
+        //    _mainWindow = mainWindow;
+
+        //    LoadCurrentWords();
+        //    SetRandomPositon();
+        //    SetRandomColor();
+            
+
+        //    // 可拖动范围
+        //    _dragArea = new Rect(0, 0, this.Width, this.Height);
+
+        //}
+
+        public NoteWindow(Word word,double left,double top)
         {
             InitializeComponent();
-            _mainWindow = mainWindow;
-
-            LoadCurrentWords();
-            SetRandomPositon();
+            LoadCurrentWords(word);
+            SetRandomPositon(left,top);
             SetRandomColor();
-            
+
 
             // 可拖动范围
             _dragArea = new Rect(0, 0, this.Width, this.Height);
-
         }
 
-        
 
-        private void LoadCurrentWords()
+
+        private void LoadCurrentWords(Word word)
         {
             // 获取单词
-            EnglishNote.Text = _mainWindow.currentWord.English;
-            ChineseNote.Text = _mainWindow.currentWord.Chinese;
+            EnglishNote.Text = word.English;
+            ChineseNote.Text = word.Chinese;
             AdjustGridColumnWidth(EnglishNote.Text);
         }
 
-        private void SetRandomPositon()
+        private void SetRandomPositon(double left, double top)
         {
             // 生成随机位置
             Random random = new Random();
-            this.Left = _mainWindow.Left + random.Next(0, 100);
-            this.Top = _mainWindow.Top + random.Next(0, 100);
+            this.Left = left + random.Next(0, 100);
+            this.Top = top + random.Next(0, 100);
         }
 
         private void SetRandomColor()

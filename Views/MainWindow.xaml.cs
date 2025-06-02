@@ -189,7 +189,7 @@ public partial class MainWindow : BaseWindow
 
     private void NoteButton_Click(object sender, RoutedEventArgs e)
     {
-        _noteWindow = new NoteWindow(this);
+        _noteWindow = new NoteWindow(this.currentWord,this.Left,this.Top);
         _noteWindow.Owner = this; // 设置主窗口为菜单窗口的父窗口
         _noteWindow.Closed += (s, args) => _noteWindow = null; // 窗口关闭时清空引用
         _noteWindow.Show();

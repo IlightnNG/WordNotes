@@ -24,6 +24,8 @@ namespace WordNotes.Views
     public partial class HistoryWordsPage : Page
     {
         private MainWindow _mainWindow;
+        // 便签窗口
+        private NoteWindow _noteWindow;
 
         public HistoryWordsPage(MainWindow mainWindow)
         {
@@ -124,6 +126,20 @@ namespace WordNotes.Views
                     }
                 }
             }
+        }
+        private void NoteButton_Click(object sender, RoutedEventArgs e)
+        {
+            // 获取当前显示的英文单词
+            Button button = sender as Button;
+            var dataContext = button.DataContext;
+            if (dataContext != null && dataContext is Word word && word.English != null)
+            {
+                _noteWindow = new NoteWindow(word, _mainWindow.Left, _mainWindow.Top);
+                _noteWindow.Owner = _mainWindow; // 设置主窗口为菜单窗口的父窗口
+                _noteWindow.Closed += (s, args) => _noteWindow = null; // 窗口关闭时清空引用
+                _noteWindow.Show();
+            }
+
         }
     }
 }
