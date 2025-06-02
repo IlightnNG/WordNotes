@@ -26,8 +26,9 @@
                 x:Name="Draggable"
                 PreviewMouseLeftButtonDown="BaseWindow_PreviewMouseLeftButtonDown"
                 PreviewMouseMove="BaseWindow_PreviewMouseMove"
-                PreviewMouseLeftButtonUp="BaseWindow_PreviewMouseLeftButtonUp">
-            <Grid Margin="10,0,10,0">
+                PreviewMouseLeftButtonUp="BaseWindow_PreviewMouseLeftButtonUp"
+                Margin="0,0,0,-1">
+            <Grid Margin="10,0,10,2">
                 <!--均分4份-->
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -41,7 +42,7 @@
                         Width="15" Height="13" 
                         HorizontalAlignment="Center" VerticalAlignment="Center" 
                         Cursor="Hand"
-                        Margin="0,0,0,0"
+                        Margin="0,2,0,0"
                         IsChecked="False"
                         Checked="PausePlayButton_Checked"
                         Unchecked="PausePlayButton_Unchecked">
@@ -301,7 +302,7 @@
             </Grid>
         </Border>
         
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" >
             <Border Background="#f4f1de"
                     CornerRadius="0,0,8,8">
                 <!-- 上下分栏布局 -->
