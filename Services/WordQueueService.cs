@@ -74,6 +74,12 @@ namespace WordNotes.Services
         public int NextWord()
         {
             int index = 0;
+            // 展示队列调整长度限制
+            while (historyQueue.Count > 200)
+            {
+                historyQueue.RemoveAt(0);
+            }
+
             if (favoriteQueue.Count > 0 && random.Next(100) <= _appSettings.FavoriteQueueProbability) // 进入记忆队列概率
             {
                 // 从队列中随机获取一个单词

@@ -8,13 +8,13 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="FavoriteWordsPage">
 
-    <ScrollViewer>
-        <StackPanel>
+    <ScrollViewer Padding="0,0,4,0">
+        <StackPanel Margin="5">
             <!-- 动态生成收藏单词列表 -->
             <ItemsControl x:Name="FavoriteWordsList">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Padding="10,7,10,7" Background="#f2cc8f" CornerRadius="5" Margin="7,5,14,2">
+                        <Border Padding="10,7,10,7" Background="#f2cc8f" CornerRadius="5" Margin="2,3">
                             <StackPanel>
                                 <Grid>
 
@@ -58,7 +58,109 @@
                                         </Button.Template>
                                     </Button>
                                 </Grid>
-                                <TextBlock Text="{Binding Chinese}" FontSize="12" Foreground="#3d405b" TextWrapping="Wrap" />
+                                <Grid>
+                                    <TextBlock Text="{Binding Chinese}" FontSize="12" Foreground="#3d405b" TextWrapping="Wrap" />
+
+                                    <!-- 折角 -->
+                                    <Button Width="18" Height="18" 
+            VerticalAlignment="Bottom" 
+            HorizontalAlignment="Right" 
+            Click="NoteButton_Click"
+            Padding="0"
+            Margin="0,0,-14,-12"
+            Cursor="Hand">
+                                        <!-- 添加缩放变换 -->
+                                        <Button.RenderTransform>
+                                            <ScaleTransform ScaleX="0.7" ScaleY="0.7" />
+                                        </Button.RenderTransform>
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Grid>
+                                                    <Ellipse Fill="Transparent"/>
+                                                    <Path Fill="#e07a5f" Stretch="None"
+                          HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                          Margin="0">
+                                                        <Path.Data>
+                                                            <PathGeometry>
+                                                                <PathFigure StartPoint="0,0">
+                                                                    <LineSegment Point="-3,0" />
+                                                                    <ArcSegment Point="0,-3" Size="3,3" SweepDirection="Counterclockwise" />
+                                                                    <LineSegment Point="0,-10" />
+                                                                    <ArcSegment Point="8,-18" Size="8,8" SweepDirection="Clockwise" />
+                                                                    <LineSegment Point="15,-18" />
+                                                                    <ArcSegment Point="18,-20" Size="3,3" SweepDirection="Counterclockwise" />
+                                                                    <LineSegment Point="18,-18" />
+                                                                </PathFigure>
+                                                            </PathGeometry>
+                                                        </Path.Data>
+                                                        <Path.Effect>
+                                                            <DropShadowEffect Color="#3d405b" 
+                                            Direction="-45" 
+                                            ShadowDepth="1" 
+                                            BlurRadius="5" 
+                                            Opacity="0.6" />
+                                                        </Path.Effect>
+                                                        <!-- 设置变换 -->
+                                                        <Path.RenderTransform>
+                                                            <TransformGroup>
+                                                                <ScaleTransform x:Name="IconScaleTransform" ScaleX="1" ScaleY="1" />
+                                                                <TranslateTransform x:Name="IconTranslateTransform" X="0" Y="0" />
+                                                            </TransformGroup>
+                                                        </Path.RenderTransform>
+
+                                                    </Path>
+                                                </Grid>
+
+                                                <!-- 触发器：鼠标经过时触发动画 -->
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Trigger.EnterActions>
+                                                            <!-- 鼠标进入时，放大并向左上角移动 -->
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <!-- 放大动画 -->
+                                                                    <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
+                                                     Storyboard.TargetProperty="ScaleX"
+                                                     From="1" To="1.1" Duration="0:0:0.2" />
+                                                                    <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
+                                                     Storyboard.TargetProperty="ScaleY"
+                                                     From="1" To="1.1" Duration="0:0:0.2" />
+                                                                    <!-- 移动动画 -->
+                                                                    <DoubleAnimation Storyboard.TargetName="IconTranslateTransform"
+                                                     Storyboard.TargetProperty="X"
+                                                     From="0" To="-2" Duration="0:0:0.2" />
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.EnterActions>
+                                                        <Trigger.ExitActions>
+                                                            <!-- 鼠标离开时，恢复初始状态 -->
+                                                            <BeginStoryboard>
+                                                                <Storyboard>
+                                                                    <!-- 缩小动画 -->
+                                                                    <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
+                                                     Storyboard.TargetProperty="ScaleX"
+                                                     From="1.1" To="1" Duration="0:0:0.2" />
+                                                                    <DoubleAnimation Storyboard.TargetName="IconScaleTransform"
+                                                     Storyboard.TargetProperty="ScaleY"
+                                                     From="1.1" To="1" Duration="0:0:0.2" />
+                                                                    <!-- 移动动画 -->
+                                                                    <DoubleAnimation Storyboard.TargetName="IconTranslateTransform"
+                                                     Storyboard.TargetProperty="X"
+                                                     From="-2" To="0" Duration="0:0:0.2" />
+                                                                </Storyboard>
+                                                            </BeginStoryboard>
+                                                        </Trigger.ExitActions>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                
+                                </Grid>
+                                
+                                
+                            
+                                
                             </StackPanel>
                         </Border>
                     </DataTemplate>

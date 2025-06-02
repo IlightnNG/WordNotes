@@ -44,24 +44,26 @@
             </Setter>
         </Style>
     </Page.Resources>
+    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
     
-        <ScrollViewer Grid.Row="0">
+        <ScrollViewer Grid.Row="0" Padding="0,0,4,0">
             <StackPanel Margin="5">
                 <!-- 基本信息 -->
-                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
+                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2,3">
                     <StackPanel>
-                        <TextBlock Text="软件名：Word Notes" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
-                        <TextBlock Text="版本：v0.3.1" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
+                        <TextBlock Text="软件名：WordNotes" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
+                        <TextBlock Text="版本：v1.0.0" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
                         <TextBlock Text="作者：IlightnNG" FontSize="12" Foreground="#3d405b" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
                 <!-- 第一行 单词间隔 -->
-                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
+                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2,3">
                     <Grid>
                         <Grid>
                             <TextBlock Text="切换时间(s)"  FontSize="14" Foreground="#3d405b" VerticalAlignment="Center"/>
@@ -97,7 +99,7 @@
                 </Border>
 
                 <!-- 出现收藏单词概率 -->
-                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
+                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2,3">
                     <Grid >
                         <Grid>
                             <TextBlock Text="收藏单词
@@ -134,7 +136,7 @@
                 </Border>
                 
                 <!-- 每日新词和复习词 -->
-                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
+                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2,3">
                     <StackPanel Orientation="Vertical">
                         <!-- 模式开关 -->
                         <Grid>
@@ -220,7 +222,7 @@
                 </Border>
 
                 <!-- 词库路径 -->
-                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2">
+                <Border Background="#f2cc8f" CornerRadius="5" Padding="10,8,10,8" Margin="2,3">
                     <StackPanel Orientation="Vertical">
                         <Grid>
                             <TextBlock Text="词库路径" FontSize="14" Foreground="#3d405b" VerticalAlignment="Center"/>
